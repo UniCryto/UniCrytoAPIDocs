@@ -1,0 +1,280 @@
+  openapi: 3.0.3
+
+  info:
+    version: 0.0.1
+    title: Unified Crypto APIs
+    description: >-
+      UniCryto Vision & Mision is to enable developers and Cryptocurrency users with Unified Tools.
+      Right from building bots analyzing Tokenomics, Taxnomics, Secureonomics & Tradenomics to fully equipped Dex Web Portals.
+
+  servers:
+    - url: 'https://api.unicryto.org'
+
+  tags:
+    - name: Tokenomics
+      description: >-
+        APIs for Token details such as Total Supply, Circulating Supply, Initial & Current Liquidity, Total Market Cap,
+        Holders, Total Transactions, Social Network Links etc
+    - name: Taxnomics
+      description: >-
+        APIs for Token Tax Related Details such as Initial Taxes, current Taxes, Tax Collected & withdrawals so far etc
+    - name: Tradenomics
+      description: >-
+        APIs for latest Buys, sells, new pairs, daily gainers, daily loosers, top trending pairs etc
+
+  paths:
+    /token/{id}/info:
+      get:
+        tags:
+          - Tokenomics
+        summary: Return Token Details
+        description: Return basic token details such as Total Supply, Total Liquidity, Total Market Cap etc
+        parameters:
+          - $ref: '#/components/parameters/Id'
+        responses:
+          200:
+            $ref: '#/components/responses/BasicTokenInfo'
+    /token/{id}/tax:
+      get:
+        tags:
+          - Taxnomics
+        summary: Return Token Tax Details
+        description: Return Token Buy, Sell & total tax percentage.
+        parameters:
+          - $ref: '#/components/parameters/Id'
+        responses:
+          200:
+            $ref: '#/components/responses/BasicTaxInfo'
+    /tokens/trending:
+      get:
+        tags:
+          - Tradenomics
+        summary: Return trending token pairs
+        description: Retrun latest high quality top 5 trending token pairs based on complex algorithm.
+        responses:
+          200:
+            $ref: '#/components/responses/Top10TrendingPairs'
+    /tokens/dailyGainers:
+      get:
+        tags:
+          - Tradenomics
+        summary: Return daily gainers list
+        description: Return last 24hrs top gainers
+        responses:
+          200:
+            $ref: '#/components/responses/Top10DailyGainers'
+    /tokens/dailyLoosers:
+      get:
+        tags:
+          - Tradenomics
+        summary: Return daily loosers list
+        description: Return last 24hrs top loosers
+        responses:
+          200:
+            $ref: '#/components/responses/Top10DailyLoosers'
+
+  components:
+    parameters:
+      Id:
+        name: id
+        in: path
+        required: true
+        description: Address of the Smart Contract
+        schema:
+          $ref: '#/components/schemas/Id'
+    responses:
+      BasicTokenInfo:
+        description: Basic Token Information
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BasicTokenInfo"
+      BasicTaxInfo:
+        description: Basic Token Tax Information
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BasicTaxInfo"
+      Top10TrendingPairs:
+        description: Return top 10 trending tokens
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Top10TrendingPairs'
+      Top10DailyGainers:
+        description: Return top 10 daily gainers
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Top10DailyGainers'
+      Top10DailyLoosers:
+        description: Return top 10 daily loosers
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Top10DailyLoosers'
+    schemas:
+      Id:
+        description: Address of the Smart Contract
+        type: string
+        example: '0x6e2a43be0b1d33b726f0ca3b8de60b3482b8b050'
+      TotalSupply:
+        description: Total Supply of the Smart Contract
+        type: string
+        example: '1000000000'
+      Volume24h:
+        description: 24 Hours Volume
+        type: string
+        example: '500k'
+      TotalMarketCap:
+        description: Total Market Cap
+        type: string
+        example: '900k'
+      Holders:
+        description: Nuber Of Holders
+        type: integer
+        example: 1500
+      TotalTransactions:
+        description: Total Number Of Transactions
+        type: integer
+        example: 10000
+      BuyTaxPercentage:
+        description: Buy Tax Percentage when Token is swapped
+        type: number
+        example: 2.0
+      SellTaxPercentage:
+        description: Sell Tax Percentage when Token is swapped
+        type: number
+        example: 2.0
+      TotalTaxPercentage:
+        description: Buy + Sell Tax Percentage when Token is Traded
+        type: number
+        example: 4.0
+      TotalTaxCollected:
+        description: Total Tax Collected in tradings so far.
+        type: number
+        example: 10 ETH
+      TotalTaxSpent:
+        description: Total Tax Spent so far.
+        type: number
+        example: 5 ETH
+      TaxDepositedWallets:
+        description: Tax Deposited or collected Wallets from tradings
+        type: array
+        items:
+          type: string
+        example: ["0xAA24c63626595a6d00fE16c0E331589461e479AA", "0xBB24c63626595a6d00fE16c0E331589461e479BB"]
+      TaxWithdrawalWallets:
+        description: Tax distributed to other wallets for Marketing or Project Maintenance Purposes.
+        type: array
+        items:
+          type: string
+        example: ["0xCC24c63626595a6d00fE16c0E331589461e479CC", "0xDD24c63626595a6d00fE16c0E331589461e479DD"]
+      Token:
+        description: Token Identity
+        type: object
+        properties:
+          name:
+            description: Name of the Token
+            type: string
+            example: "SHIBA INU"
+          id:
+            description: Contract Address of the Token
+            type: string
+            example: "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
+      TokenVarying:
+        description: Token Identity
+        type: object
+        properties:
+          name:
+            description: Name of the Token
+            type: string
+            example: "SHIBA INU"
+          id:
+            description: Contract Address of the Token
+            type: string
+            example: "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
+          variance:
+            description: Percentage Up or Down Variance. By default time period is 24hrs
+      BasicTokenInfo:
+        type: object
+        properties:
+          id:
+            $ref: "#/components/schemas/Id"
+          totalSupply:
+            $ref: "#/components/schemas/TotalSupply"
+          volume24h:
+            $ref: "#/components/schemas/Volume24h"
+          totalMarketCap:
+            $ref: "#/components/schemas/TotalMarketCap"
+          holders:
+            $ref: "#/components/schemas/Holders"
+          totalTransactions:
+            $ref: "#/components/schemas/TotalTransactions"
+      BasicTaxInfo:
+        type: object
+        properties:
+          id:
+            $ref: "#/components/schemas/Id"
+          buyTaxPercentage:
+            $ref: "#/components/schemas/BuyTaxPercentage"
+          sellTaxPercentage:
+            $ref: "#/components/schemas/SellTaxPercentage"
+          totalTaxPercentage:
+            $ref: "#/components/schemas/TotalTaxPercentage"
+          totalTaxCollected:
+            $ref: "#/components/schemas/TotalTaxCollected"
+          totalTaxSpent:
+            $ref: '#/components/schemas/TotalTaxSpent'
+          taxDepositedWallets:
+            $ref: '#/components/schemas/TaxDepositedWallets'
+          taxWithdrawalWallets:
+            $ref: '#/components/schemas/TaxWithdrawalWallets'
+      Top10TrendingPairs:
+        type: array
+        items:
+          $ref: '#/components/schemas/Token'
+        example: [
+          {"name": "UniCryt", "id": "0x3170ed0880ac9a755fd29b2688956bd959f933f8"},
+          {"name": "Ethereum Token", "id": "0x2170ed0880ac9a755fd29b2688956bd959f933f8"},
+          {"name": "Dogecoin", "id": "0xba2ae424d960c26247dd6c32edc70b295c744c43"},
+          {"name": "SHIBA INU", "id": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"},
+          {"name": "ARKM", "id": "0x6e2a43be0b1d33b726f0ca3b8de60b3482b8b050"},
+          {"name": "FLOKI", "id": "0xcf0c122c6b73ff809c693db761e7baebe62b6a2e"},
+          {"name": "PEPE", "id": "0x6982508145454ce325ddbe47a25d4ec3d2311933"},
+          {"name": "PEPE2.0", "id": "0xfb66321d7c674995dfcc2cb67a30bc978dc862ad"},
+          {"name": "PEPE3.0", "id": "0xfb66321d7c674995dfcc2cb67a30bc978dc862ad"},
+          {"name": "PEPE4.0", "id": "0xfb66321d7c674995dfcc2cb67a30bc978dc862ad"},
+        ]
+      Top10DailyGainers:
+        type: array
+        items:
+          $ref: '#/components/schemas/TokenVarying'
+        example: [
+          {"name": "UniCryto", "id": "0x3170ed0880ac9a755fd29b2688956bd959f933f8", "variance": "50000.00"},
+          {"name": "Ethereum Token", "id": "0x2170ed0880ac9a755fd29b2688956bd959f933f8", "variance": "40000.00"},
+          {"name": "Dogecoin", "id": "0xba2ae424d960c26247dd6c32edc70b295c744c43", "variance": "30000.00"},
+          {"name": "SHIBA INU", "id": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce", "variance": "30000.00"},
+          {"name": "ARKM", "id": "0x6e2a43be0b1d33b726f0ca3b8de60b3482b8b050", "variance": "10000.00"},
+          {"name": "FLOKI", "id": "0xcf0c122c6b73ff809c693db761e7baebe62b6a2e", "variance": "5000.00"},
+          {"name": "PEPE", "id": "0x6982508145454ce325ddbe47a25d4ec3d2311933", "variance": "4000.00"},
+          {"name": "PEPE2.0", "id": "0xfb66321d7c674995dfcc2cb67a30bc978dc862ad", "variance": "3000.00"},
+          {"name": "PEPE3.0", "id": "0xfb66321d7c674995dfcc2cb67a30bc978dc862ad", "variance": "2000.00"},
+          {"name": "PEPE4.0", "id": "0xfb66321d7c674995dfcc2cb67a30bc978dc862ad", "variance": "1000.00"},
+        ]
+      Top10DailyLoosers:
+        type: array
+        items:
+          $ref: '#/components/schemas/TokenVarying'
+        example: [
+          { "name": "Hoppy", "id": "0x3170ed0880ac9a755fd29b2688956bd959f933f8", "variance": "-50000.00" },
+          { "name": "Ethereum Token", "id": "0x2170ed0880ac9a755fd29b2688956bd959f933f8", "variance": "-40000.00" },
+          { "name": "Dogecoin", "id": "0xba2ae424d960c26247dd6c32edc70b295c744c43", "variance": "-30000.00" },
+          { "name": "SHIBA INU", "id": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce", "variance": "-30000.00" },
+          { "name": "ARKM", "id": "0x6e2a43be0b1d33b726f0ca3b8de60b3482b8b050", "variance": "-10000.00" },
+          { "name": "FLOKI", "id": "0xcf0c122c6b73ff809c693db761e7baebe62b6a2e", "variance": "-5000.00" },
+          { "name": "PEPE", "id": "0x6982508145454ce325ddbe47a25d4ec3d2311933", "variance": "-4000.00" },
+          { "name": "PEPE2.0", "id": "0xfb66321d7c674995dfcc2cb67a30bc978dc862ad", "variance": "-3000.00" },
+          { "name": "PEPE3.0", "id": "0xfb66321d7c674995dfcc2cb67a30bc978dc862ad", "variance": "-2000.00" },
+          { "name": "PEPE4.0", "id": "0xfb66321d7c674995dfcc2cb67a30bc978dc862ad", "variance": "-1000.00" },
+        ]
